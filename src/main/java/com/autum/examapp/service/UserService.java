@@ -37,7 +37,8 @@ public class UserService {
 
 
 
-    public UserDTO saveUser(UserRequestDTO userRequestDTO) {
+    public UserDTO saveUser(UserRequestDTO userRequestDTO)
+    {
 
         // Check if user already exists
         User existingUser = userRepository.findByEmail(userRequestDTO.getEmail());
@@ -85,12 +86,17 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        emailService.sendEmail(
-                savedUser.getEmail(),
-                "Your OTP Verification Code",
-                "Your OTP is: " + savedUser.getOtp() + "\nIt expires in 5 minutes."
-        );
+        try {
 
+            emailService.sendEmail(
+                    savedUser.getEmail(),
+                    "Your OTP Verification Code",
+                    "Your OTP is: " + savedUser.getOtp() + "\nIt expires in 5 minutes."
+            );
+
+        } catch (Exception e) {
+            System.out.println("Email sending failed: " + e.getMessage());
+        }
         UserDTO userDTO = new UserDTO();
         userDTO.setId(savedUser.getId());
         userDTO.setName(savedUser.getName());
@@ -247,7 +253,7 @@ public class UserService {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new UserNotFoundException("User not found with this email");
+            return "User not found";
         }
 
         String otp = generateOtp();
@@ -257,11 +263,17 @@ public class UserService {
 
         userRepository.save(user);
 
-        emailService.sendEmail(
-                user.getEmail(),
-                "Password Reset OTP",
-                "Your password reset OTP is: " + otp + "\nIt expires in 5 minutes."
-        );
+        try {
+
+            emailService.sendEmail(
+                    user.getEmail(),
+                    "Password Reset OTP",
+                    "Your password reset OTP is: " + otp + "\nIt expires in 5 minutes."
+            );
+
+        } catch (Exception e) {
+            System.out.println("Email error: " + e.getMessage());
+        }
 
         return "Password reset OTP sent to your email";
     }
