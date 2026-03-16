@@ -11,15 +11,20 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String toEmail, String subject, String body) {
+    public void sendEmail(String to, String subject, String body) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(body);
+            message.setFrom("shaikajith2001@gmail.com");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        System.out.println("EMAIL METHOD CALLED");
+            mailSender.send(message);
 
-        message.setTo(toEmail);
-        message.setSubject(subject);
-        message.setText(body);
+            System.out.println("Email sent successfully");
 
-        mailSender.send(message);
+        } catch (Exception e) {
+            System.out.println("Email sending failed: " + e.getMessage());
+        }
     }
 }
