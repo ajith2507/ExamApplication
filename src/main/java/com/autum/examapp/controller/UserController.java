@@ -130,4 +130,13 @@ public class UserController {
     public User getProfile(@RequestParam String email){
         return userRepository.findByEmail(email);
     }
+    @GetMapping("/test-mail")
+    public String testMail() {
+        emailService.sendEmail(
+                "ajith05010@gmail.com",
+                "Test Email from Railway",
+                "This is a test email from your deployed Spring Boot app."
+        );
+        return "Test email sent";
+    }
 }
