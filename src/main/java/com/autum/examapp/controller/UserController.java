@@ -9,6 +9,8 @@ import com.autum.examapp.service.EmailService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,8 +92,14 @@ public class UserController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@RequestParam String email) {
-        return userService.forgotPassword(email);
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        try {
+            String result = userService.forgotPassword(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error sending OTP: " + e.getMessage());
+        }
     }
     @PostMapping("/verify-reset-otp")
     public String verifyResetOtp(@RequestParam String email,
