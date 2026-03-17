@@ -13,7 +13,8 @@ public class EmailService {
 
     public void sendEmail(String to, String subject, String body) {
         try {
-            System.out.println("API KEY: " + System.getenv("SENDGRID_API_KEY"));
+            System.out.println("API KEY: " +
+                    System.getenv("SENDGRID_API_KEY"));
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject(subject);
